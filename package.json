@@ -1,0 +1,35 @@
+{
+  "name": "katajigo",
+  "version": "1.0.0",
+  "description": "",
+  "bin": "src/main.js",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier \"./src/**/*.js\" \"./**/*.md\" --write",
+    "format-watch": "onchange \"./src/**/*.js\" \"./**/*.md\" -- prettier --write {{changed}}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yishn/KataJigo.git"
+  },
+  "author": "Yichuan Shen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yishn/KataJigo/issues"
+  },
+  "homepage": "https://github.com/yishn/KataJigo#readme",
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "bracketSpacing": false,
+    "proseWrap": "always"
+  },
+  "dependencies": {
+    "@sabaki/gtp": "^2.2.2"
+  },
+  "devDependencies": {
+    "onchange": "^6.1.0",
+    "prettier": "1.19.1"
+  }
+}
