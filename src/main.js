@@ -161,6 +161,10 @@ async function main() {
     }
   })
 
+  engine.on('abort-received', () => {
+    controller.sendAbort()
+  })
+
   engine.command('list_commands', async (command, out) => {
     let response = await controller.sendCommand(command)
     let commands = response.content

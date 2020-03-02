@@ -26,7 +26,7 @@
     "proseWrap": "always"
   },
   "dependencies": {
-    "@sabaki/gtp": "^2.2.2"
+    "@sabaki/gtp": "^2.3.0"
   },
   "devDependencies": {
     "onchange": "^6.1.0",
