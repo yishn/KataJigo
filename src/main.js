@@ -135,6 +135,7 @@ async function main() {
         'name',
         'version',
         'list_commands',
+        'lz-genmove_analyze',
         'kata-genmove_analyze',
         'genmove'
       ].includes(command.name)
@@ -150,7 +151,7 @@ async function main() {
         }
 
         let response =
-          command.name === 'kata-genmove_analysis'
+          command.name.match(/^\w+-genmove_analysis$/) != null
             ? await genmoveAnalyze(command.args, subscriber)
             : await controller.sendCommand(command, subscriber)
 
@@ -158,6 +159,15 @@ async function main() {
         out.end()
       })
     }
+  })
+
+  engine.command('list_commands', async (command, out) => {
+    let response = await controller.sendCommand(command)
+    let commands = response.content
+      .split('\n')
+      .filter(x => x.match(/^(\w+-)?genmove_analyze$/) == null)
+
+    out.send(commands.join('\n'))
   })
 
   engine.command('genmove', async (command, out) => {
