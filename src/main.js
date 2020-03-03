@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const {dirname, join} = require('path')
 const {Controller, Engine} = require('@sabaki/gtp')
 const {version} = require('../package.json')
 
@@ -46,12 +47,14 @@ function parseAnalysis(line) {
 }
 
 async function main() {
-  let args = process.argv.slice(3)
-  let controller = new Controller(process.argv[2], args)
+  let args = process.argv.slice(2)
+  let gtpMode = args[0] === 'gtp'
+  let katagoPath = join(dirname(process.execPath), 'katago')
+  let controller = new Controller(katagoPath, args)
   let engine = new Engine('KataJigo', version)
 
   controller.on('started', () => {
-    if (args[0] !== 'gtp') {
+    if (!gtpMode) {
       controller.process.stdout.on('data', chunk => {
         process.stdout.write(chunk)
       })
@@ -142,7 +145,6 @@ async function main() {
         'version',
         'list_commands',
         'lz-genmove_analyze',
-        'kata-genmove_analyze',
         'genmove'
       ].includes(command.name)
     ) {
@@ -157,7 +159,7 @@ async function main() {
         }
 
         let response =
-          command.name.match(/^\w+-genmove_analysis$/) != null
+          command.name === 'kata-genmove_analyze'
             ? await genmoveAnalyze(command.args, subscriber)
             : await controller.sendCommand(command, subscriber)
 
@@ -175,7 +177,7 @@ async function main() {
     let response = await controller.sendCommand(command)
     let commands = response.content
       .split('\n')
-      .filter(x => x.match(/^(\w+-)?genmove_analyze$/) == null)
+      .filter(x => x !== 'lz-genmove_analyze')
 
     out.send(commands.join('\n'))
   })
@@ -192,7 +194,7 @@ async function main() {
   })
 
   controller.start()
-  engine.start()
+  if (gtpMode) engine.start()
 }
 
 main().catch(console.error)
