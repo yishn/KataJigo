@@ -7,7 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier \"./src/**/*.js\" \"./**/*.md\" --write",
-    "format-watch": "onchange \"./src/**/*.js\" \"./**/*.md\" -- prettier --write {{changed}}"
+    "format-watch": "onchange \"./src/**/*.js\" \"./**/*.md\" -- prettier --write {{changed}}",
+    "build": "pkg . --targets node12 --out-path ./bin",
+    "build:all": "pkg . --targets node12-windows-x64,node12-linux-x64,node12-macos-x64 --out-path ./bin"
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,7 @@
   },
   "devDependencies": {
     "onchange": "^6.1.0",
+    "pkg": "^4.4.4",
     "prettier": "1.19.1"
   }
 }
