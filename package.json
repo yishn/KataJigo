@@ -6,10 +6,16 @@
   "main": "src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier \"./src/**/*.js\" \"./**/*.md\" --write",
-    "format-watch": "onchange \"./src/**/*.js\" \"./**/*.md\" -- prettier --write {{changed}}",
+    "format": "prettier \"./**/*.{js,md}\" --write",
+    "format-watch": "onchange \"./**/*.{js,md}\" -- prettier --write {{changed}}",
     "build": "pkg . --targets node12 --out-path ./bin",
-    "build:all": "pkg . --targets node12-windows-x64,node12-linux-x64,node12-macos-x64 --out-path ./bin"
+    "build:win": "pkg . --targets node12-windows-x64 --out-path ./bin/katajigo-win",
+    "build:mac": "pkg . --targets node12-macos-x64 --out-path ./bin/katajigo-mac",
+    "build:linux": "pkg . --targets node12-linux-x64 --out-path ./bin/katajigo-linux",
+    "dist:win": "npm run build:win && mkdirp ./dist && cross-zip ./bin/katajigo-win ./dist/katajigo-win.zip",
+    "dist:mac": "npm run build:mac && mkdirp ./dist && cross-zip ./bin/katajigo-mac ./dist/katajigo-mac.zip",
+    "dist:linux": "npm run build:linux && mkdirp ./dist && cross-zip ./bin/katajigo-linux ./dist/katajigo-linux.zip",
+    "dist:all": "npm run dist:win && npm run dist:mac && npm run dist:linux"
   },
   "repository": {
     "type": "git",
@@ -31,6 +37,8 @@
     "@sabaki/gtp": "^2.3.1"
   },
   "devDependencies": {
+    "cross-zip-cli": "^1.0.0",
+    "mkdirp": "^1.0.3",
     "onchange": "^6.1.0",
     "pkg": "^4.4.4",
     "prettier": "1.19.1"
