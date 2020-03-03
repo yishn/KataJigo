@@ -50,6 +50,7 @@ async function main() {
   let args = process.argv.slice(2)
   let gtpMode = args[0] === 'gtp'
   let katagoPath = join(dirname(process.execPath), 'katago')
+
   let controller = new Controller(katagoPath, args)
   let engine = new Engine('KataJigo', version)
 
