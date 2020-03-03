@@ -102,8 +102,11 @@ async function main() {
           if (lastAnalysis.length > 0) {
             let variation = lastAnalysis[0]
 
-            console.error(`scoreLead: ${variation.scoreLead}`)
-            console.error(`winrate: ${variation.winrate}`)
+            for (let [key, value] of Object.entries(variation)) {
+              console.error(
+                `${key}: ${Array.isArray(value) ? value.join(' ') : value}`
+              )
+            }
 
             foundMove = variation.move
             evt.line = `play ${variation.move}`
