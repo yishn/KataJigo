@@ -81,10 +81,13 @@ async function main() {
         } else if (evt.line.startsWith('play ') && lastAnalysis != null) {
           originalMove = evt.line.slice('play '.length).trim()
 
+          lastAnalysis = lastAnalysis.filter(
+            // Ensure we're still winning
+            variation => variation.winrate >= 0.5 && variation.scoreLead >= 0
+          )
+
           let minScoreLead = Math.min(
-            ...lastAnalysis
-              .filter(variation => variation.scoreLead >= 0)
-              .map(variation => variation.scoreLead)
+            ...lastAnalysis.map(variation => variation.scoreLead)
           )
 
           lastAnalysis = lastAnalysis.filter(
