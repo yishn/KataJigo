@@ -46,6 +46,18 @@ function parseAnalysis(line) {
     }))
 }
 
+function stringifyAnalysis(analysis) {
+  return analysis
+    .map(
+      entry =>
+        `info ${Object.entries(entry).map(
+          ([key, value]) =>
+            `${key} ${Array.isArray(value) ? value.join(' ') : value}`
+        )}`
+    )
+    .join(' ')
+}
+
 async function main() {
   let args = process.argv.slice(2)
   let gtpMode = args[0] === 'gtp'
@@ -145,13 +157,9 @@ async function main() {
 
   engine.on('command-received', ({command}) => {
     if (
-      ![
-        'name',
-        'version',
-        'list_commands',
-        'lz-genmove_analyze',
-        'genmove'
-      ].includes(command.name)
+      !['name', 'version', 'genmove', 'lz-genmove_analyze'].includes(
+        command.name
+      )
     ) {
       engine.command(command.name, async (command, out) => {
         let firstWrite = true
@@ -178,15 +186,6 @@ async function main() {
     controller.sendAbort()
   })
 
-  engine.command('list_commands', async (command, out) => {
-    let response = await controller.sendCommand(command)
-    let commands = response.content
-      .split('\n')
-      .filter(x => x !== 'lz-genmove_analyze')
-
-    out.send(commands.join('\n'))
-  })
-
   engine.command('genmove', async (command, out) => {
     let response = await genmoveAnalyze(command.args.slice(0, 1), ({line}) => {
       if (line.startsWith('play ')) {
@@ -196,6 +195,38 @@ async function main() {
     })
 
     if (response.error) out.err(response.content)
+  })
+
+  engine.command('lz-genmove_analyze', async (command, out) => {
+    let firstWrite = true
+
+    await genmoveAnalyze(command.args, ({line}) => {
+      if (!firstWrite) out.write('\n')
+
+      if (line.startsWith('info ')) {
+        let analysis = parseAnalysis(line)
+        let keys = ['move', 'visits', 'winrate', 'prior', 'lcb', 'order', 'pv']
+
+        analysis = keys.reduce(
+          (acc, key) => ((acc[key] = analysis[key]), acc),
+          {}
+        )
+
+        for (let entry of analysis) {
+          entry.winrate = +entry.winrate * 10000
+          entry.prior = +entry.prior * 10000
+          entry.lcb = +entry.lcb * 10000
+        }
+
+        out.write(stringifyAnalysis(analysis))
+      } else {
+        out.write(line)
+      }
+
+      firstWrite = false
+    })
+
+    out.end()
   })
 
   controller.start()
