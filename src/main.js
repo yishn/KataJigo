@@ -53,7 +53,7 @@ function stringifyAnalysis(analysis) {
         `info ${Object.entries(entry).map(
           ([key, value]) =>
             `${key} ${Array.isArray(value) ? value.join(' ') : value}`
-        )}`
+        ).join(' ')}`
     )
     .join(' ')
 }
@@ -73,7 +73,7 @@ async function main() {
       })
 
       process.stdin.on('data', chunk => {
-        controller.process.write(chunk)
+        controller.process.stdin.write(chunk)
       })
     }
   })
@@ -200,27 +200,26 @@ async function main() {
   engine.command('lz-genmove_analyze', async (command, out) => {
     let firstWrite = true
 
-    await genmoveAnalyze(command.args, ({line}) => {
+    await genmoveAnalyze(command.args, ({response, line}) => {
       if (!firstWrite) out.write('\n')
 
       if (line.startsWith('info ')) {
         let analysis = parseAnalysis(line)
         let keys = ['move', 'visits', 'winrate', 'prior', 'lcb', 'order', 'pv']
 
-        analysis = keys.reduce(
-          (acc, key) => ((acc[key] = analysis[key]), acc),
-          {}
+        analysis = analysis.map(entry =>
+          keys.reduce((acc, key) => ((acc[key] = entry[key]), acc), {})
         )
 
         for (let entry of analysis) {
-          entry.winrate = +entry.winrate * 10000
-          entry.prior = +entry.prior * 10000
-          entry.lcb = +entry.lcb * 10000
+          entry.winrate = Math.round(+entry.winrate * 10000)
+          entry.prior = Math.round(+entry.prior * 10000)
+          entry.lcb = Math.round(+entry.lcb * 10000)
         }
 
         out.write(stringifyAnalysis(analysis))
       } else {
-        out.write(line)
+        out.write(firstWrite ? response.content : line)
       }
 
       firstWrite = false
