@@ -28,7 +28,7 @@ jobs:
         npm install
         npm run dist:all
         go get -u github.com/tcnksm/ghr
-        ./ci/bin/ghr -n "KataJigo v${{ steps.info.outputs.version }}" -prerelease ${{ steps.info.outputs.tag }} ./dist
+        ./ci/bin/ghr -n "KataJigo v${{ steps.info.outputs.version }}" -draft -replace ${{ steps.info.outputs.tag }} ./dist
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GOPATH: ${{ steps.info.outputs.ci }}
