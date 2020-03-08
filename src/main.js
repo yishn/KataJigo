@@ -50,10 +50,12 @@ function stringifyAnalysis(analysis) {
   return analysis
     .map(
       entry =>
-        `info ${Object.entries(entry).map(
-          ([key, value]) =>
-            `${key} ${Array.isArray(value) ? value.join(' ') : value}`
-        ).join(' ')}`
+        `info ${Object.entries(entry)
+          .map(
+            ([key, value]) =>
+              `${key} ${Array.isArray(value) ? value.join(' ') : value}`
+          )
+          .join(' ')}`
     )
     .join(' ')
 }

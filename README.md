@@ -4,8 +4,8 @@ Play against a KataGo that strives for a Jigo instead of opponent destruction.
 
 Playing against [KataGo](https://github.com/lightvector/KataGo) can be
 particularly frustrating. Even before midgame starts, KataGo may have
-accumulated an overwhelming lead in points in the best case, or the game can
-turn into a merciless, bloody slaughter of your groups in the worst case,
+accumulated an overwhelming lead in points in the best case, or the game could
+have turned into a merciless, bloody slaughter of your groups in the worst case,
 leading to your inevitable demise, leaving you sad and empty inside.
 
 KataJigo is an experiment. It will let KataGo always aim for a half point win,
