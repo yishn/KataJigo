@@ -19,6 +19,8 @@ at least).
   width="500"
 />
 
+<sup>Jigo game of GnuGo (B) against KataJigo (W) with 7 point komi</sup>
+
 ## Installation
 
 1. Download both [KataGo](https://github.com/lightvector/KataGo) and
@@ -29,6 +31,12 @@ at least).
 
 If you already set up KataGo in Sabaki, all you need to do is replace the path
 to KataGo with the path to KataJigo in the same directory.
+
+## How does this work?
+
+Using the analysis feature of KataGo, we'll consider all the moves with
+non-negative `scoreLead` and a `winrate` that is better than 50%. Out of those
+moves we'll pick the move with the lowest `scoreLead` and the highest `winrate`.
 
 ## Building
 
