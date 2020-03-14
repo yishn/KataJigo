@@ -158,6 +158,8 @@ async function main() {
   }
 
   engine.on('command-received', ({command}) => {
+    controller.process.stdin.write('\n')
+
     if (
       !['name', 'version', 'genmove', 'lz-genmove_analyze'].includes(
         command.name
@@ -182,10 +184,6 @@ async function main() {
         out.end()
       })
     }
-  })
-
-  engine.on('abort-received', () => {
-    controller.sendAbort()
   })
 
   engine.command('genmove', async (command, out) => {
